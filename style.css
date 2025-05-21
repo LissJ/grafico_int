@@ -1,7 +1,63 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background: #f9f9f9;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #ffffff;
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 240px;
+    background: linear-gradient(180deg, #1947e5, #3d65f4);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+    padding: 20px 0;
+}
+
+.logo-box {
+    background-color: white;
+    border-radius: 25px;
+    padding: 10px 50px;
+    margin: 0 20px 30px;
+
+}
+
+.logo {
+    background-color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+}
+
+.menu .active {
+    font-weight: 700;
+}
+
+.divider {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 0 20px;
+}
+
+.logout {
+    margin-top: auto;
+    margin-left: 20px;
+    color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 h1 {

@@ -11,41 +11,61 @@
 
 <body>
 
-    <h1>Dashboard de Vulnerabilidades</h1>
-
-    <!-- Upload CSV -->
-    <input type="file" id="csvFile" accept=".csv" />
-
-    <!-- Filtro IP -->
-    <div id="filtroContainer" style="display:none; margin-top: 15px;">
-        <label for="ipSelect"><strong>Filtrar por Host/IP:</strong></label><br />
-        <select id="ipSelect">
-            <option value="">Todos</option>
-        </select>
+    <div class="sidebar">
+        <div>
+            <div class="logo-box">
+                <span class="logo"><i class="fas fa-lock"></i> zVulny</span>
+            </div>
+            <div class="menu">
+                <a href="#" class="active"><i class="fas fa-shield-alt"></i> Escanear</a>
+                <div class="divider"></div>
+                <a href="#"><i class="fas fa-sitemap"></i> Mapear</a>
+                <div class="divider"></div>
+                <a href="#"><i class="fas fa-chart-line"></i> Análise</a>
+                <div class="divider"></div>
+                <a href="#"><i class="fas fa-lightbulb"></i> Sugestão</a>
+            </div>
+        </div>
+        <a href="#" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
+    <main>
+        <h1>Dashboard de Vulnerabilidades</h1>
 
-    <!-- Gráficos -->
-    <div style="display: flex; flex-wrap: wrap; gap: 30px; margin-top: 20px;">
-        <canvas id="cvssChart" width="480" height="280"></canvas>
-        <canvas id="vulnTypeChart" width="480" height="280"></canvas>
-        <canvas id="exploitChart" width="480" height="280"></canvas>
-        <canvas id="serviceChart" width="480" height="250"></canvas>
-    </div>
+        <!-- Upload CSV -->
+        <input type="file" id="csvFile" accept=".csv" />
 
-    <!-- Tabela timeline -->
-    <table id="timelineTable" border="1"
-        style="width: 100%; margin-top: 30px; border-collapse: collapse; font-family: Arial, sans-serif;">
-        <thead>
-            <tr>
-                <th style="padding: 6px; background: #f0f0f0; text-align: left;">Data da Descoberta</th>
-                <th style="padding: 6px; background: #f0f0f0; text-align: left;">Vendor/Product</th>
-                <th style="padding: 6px; background: #f0f0f0; text-align: left;">ID da CVE</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Será populado dinamicamente pelo JS com flat list -->
-        </tbody>
-    </table>
+        <!-- Filtro IP -->
+        <div id="filtroContainer" style="display:none; margin-top: 15px;">
+            <label for="ipSelect"><strong>Filtrar por Host/IP:</strong></label><br />
+            <select id="ipSelect">
+                <option value="">Todos</option>
+            </select>
+        </div>
+
+        <!-- Gráficos -->
+        <div style="display: flex; flex-wrap: wrap; gap: 30px; margin-top: 20px;">
+            <canvas id="cvssChart" width="480" height="250"></canvas>
+            <canvas id="vulnTypeChart" width="480" height="250"></canvas>
+            <canvas id="exploitChart" width="480" height="250"></canvas>
+            <canvas id="serviceChart" width="480" height="250"></canvas>
+        </div>
+
+        <!-- Tabela timeline -->
+        <table id="timelineTable" border="1"
+            style="width: 100%; margin-top: 30px; border-collapse: collapse; font-family: Arial, sans-serif;">
+            <thead>
+                <tr>
+                    <th style="padding: 6px; background: #f0f0f0; text-align: left;">Data da Descoberta</th>
+                    <th style="padding: 6px; background: #f0f0f0; text-align: left;">Vendor/Product</th>
+                    <th style="padding: 6px; background: #f0f0f0; text-align: left;">ID da CVE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Será populado dinamicamente pelo JS com flat list -->
+            </tbody>
+        </table>
+    </main>
+
 
     <script src="script.js"></script>
 </body>
