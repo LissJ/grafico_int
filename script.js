@@ -1,5 +1,5 @@
 let dadosGlobais = [];
-let cvssChart, vulnTypeChart, exploitChart;
+let cvssChart, vulnTypeChart, exploitChart, serviceChart;
 let filtroIP = '';
 
 document.getElementById('csvFile').addEventListener('change', function (e) {
@@ -32,12 +32,10 @@ document.getElementById('csvFile').addEventListener('change', function (e) {
 
 function popularSelectIPs() {
     const select = document.getElementById('ipSelect');
-    // Limpa opções exceto "Todos"
     while (select.options.length > 1) {
         select.remove(1);
     }
 
-    // Extrai IPs únicos
     const ips = [...new Set(dadosGlobais.map(v => v['Host/IP Afetado']).filter(ip => ip))];
     ips.sort();
 
@@ -60,7 +58,6 @@ function filtrarPorIP(dados, ip) {
     return dados.filter(v => v['Host/IP Afetado'] === ip);
 }
 
-// Função para converter data dd/mm/yyyy para objeto Date (para ordenar corretamente)
 function parseDateBR(dateStr) {
     if (!dateStr) return new Date(0);
     const partes = dateStr.split('/');
@@ -68,7 +65,6 @@ function parseDateBR(dateStr) {
     return new Date(partes[2], partes[1] - 1, partes[0]);
 }
 
-// Função para formatar data (caso esteja em ISO yyyy-mm-dd, converte para dd/mm/yyyy)
 function formatDateToBR(dateStr) {
     if (!dateStr) return '';
     if (dateStr.includes('-')) {
@@ -81,24 +77,14 @@ function formatDateToBR(dateStr) {
 }
 
 function gerarGraficos(data) {
-    const severidades = {
-        'Crítica': 0,
-        'Alta': 0,
-        'Média': 0,
-        'Baixa': 0,
-        'Informativa': 0
-    };
-
-    // Tipos conhecidos (adicione aqui todos os tipos possíveis que deseja manter mesmo com zero)
+    const severidades = { 'Crítica': 0, 'Alta': 0, 'Média': 0, 'Baixa': 0, 'Informativa': 0 };
     const tipos = {
         'Misconfiguration': 0,
         'Vulnerability': 0,
         'Information': 0,
         'Default Credentials': 0,
         'Exposure': 0
-        // Adicione mais tipos conhecidos se desejar mantê-los fixos nos gráficos
     };
-
     const exploits = { Sim: 0, Nao: 0 };
 
     data.forEach(vuln => {
@@ -122,8 +108,8 @@ function gerarGraficos(data) {
     if (cvssChart) cvssChart.destroy();
     if (vulnTypeChart) vulnTypeChart.destroy();
     if (exploitChart) exploitChart.destroy();
+    if (serviceChart) serviceChart.destroy(); // <-- ESSENCIAL
 
-    // Gráfico 1: Barras horizontais - Severidade
     cvssChart = new Chart(document.getElementById('cvssChart'), {
         type: 'bar',
         data: {
@@ -137,13 +123,10 @@ function gerarGraficos(data) {
         options: {
             indexAxis: 'y',
             animation: { duration: 400 },
-            scales: {
-                x: { beginAtZero: true, precision: 0 }
-            }
+            scales: { x: { beginAtZero: true, precision: 0 } }
         }
     });
 
-    // Gráfico 2: Barras horizontais - Tipo da vulnerabilidade
     vulnTypeChart = new Chart(document.getElementById('vulnTypeChart'), {
         type: 'pie',
         data: {
@@ -160,7 +143,6 @@ function gerarGraficos(data) {
         options: { animation: { duration: 400 } }
     });
 
-    // Gráfico 3: Doughnut - Exploit disponível
     exploitChart = new Chart(document.getElementById('exploitChart'), {
         type: 'doughnut',
         data: {
@@ -174,14 +156,13 @@ function gerarGraficos(data) {
         options: { animation: { duration: 400 } }
     });
 
-    // Gráfico 4: Vulnerabilidades por Serviço/Porta
     const servicos = {};
     data.forEach(v => {
         const chave = `${v['Serviço/Porta']} (${v['Protocolo']})`;
         servicos[chave] = (servicos[chave] || 0) + 1;
     });
 
-    new Chart(document.getElementById('serviceChart'), {
+    serviceChart = new Chart(document.getElementById('serviceChart'), {
         type: 'bar',
         data: {
             labels: Object.keys(servicos),
@@ -193,21 +174,17 @@ function gerarGraficos(data) {
         },
         options: {
             indexAxis: 'y',
-            scales: {
-                x: { beginAtZero: true, precision: 0 }
-            }
+            scales: { x: { beginAtZero: true, precision: 0 } }
         }
     });
 
-    // Atualiza a tabela com ordenação correta pela Data da Descoberta (do mais antigo para o mais recente)
     const tabela = document.getElementById('timelineTable')?.querySelector('tbody');
     if (tabela) {
         tabela.innerHTML = '';
 
-        // Filtra só itens que tenham os campos necessários
         const ordenados = [...data]
             .filter(v => v['Data da Descoberta'] && v['Vendor/Produto'] && v['ID/CVE'])
-            .sort((a, b) => parseDateBR(formatDateToBR(a['Data da Descoberta'])) - parseDateBR(formatDateToBR(b['Data da Descoberta'])));
+            .sort((a, b) => parseDateBR(formatDateToBR(a['Data da Descoberta'])) - parseDateBR(b['Data da Descoberta']));
 
         ordenados.forEach(v => {
             const tr = document.createElement('tr');
@@ -224,7 +201,6 @@ function gerarGraficos(data) {
             tdCVE.textContent = v['ID/CVE'];
             tdCVE.style.padding = '6px';
 
-            // Append na ordem desejada: Data, Vendor/Product, ID CVE
             tr.appendChild(tdData);
             tr.appendChild(tdProduto);
             tr.appendChild(tdCVE);
