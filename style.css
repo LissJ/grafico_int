@@ -1,0 +1,30 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #f9f9f9;
+}
+
+h1 {
+    text-align: center;
+}
+
+#filtroContainer {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#ipSelect {
+    padding: 6px 8px;
+    width: 280px;
+    font-size: 16px;
+}
+
+canvas {
+    max-width: 480px;
+    margin: 15px auto;
+    display: block;
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 0 8px rgb(0 0 0 / 0.1);
+}

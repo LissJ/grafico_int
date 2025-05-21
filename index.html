@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard de Vulnerabilidades</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <h1>Dashboard de Vulnerabilidades</h1>
+
+    <input type="file" id="csvFile" accept=".csv" />
+
+    <div id="filtroContainer" style="display:none;">
+        <label for="ipSelect"><strong>Filtrar por Host/IP:</strong></label><br />
+        <select id="ipSelect">
+            <option value="">Todos</option>
+        </select>
+    </div>
+
+    <canvas id="cvssChart" width="480" height="280"></canvas>
+    <canvas id="vulnTypeChart" width="480" height="280"></canvas>
+    <canvas id="exploitChart" width="480" height="280"></canvas>
+    <canvas id="serviceChart" height="250"></canvas>
+    <table id="timelineTable" border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th style="padding: 6px; background: #f0f0f0;">Data da Descoberta</th>
+                <th style="padding: 6px; background: #f0f0f0;">Vendor/Product</th>
+                <th style="padding: 6px; background: #f0f0f0;">ID da CVE</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>
