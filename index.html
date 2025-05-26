@@ -17,9 +17,9 @@
                 <span class="logo"><i class="fas fa-lock"></i> zVulny</span>
             </div>
             <div class="menu">
-                <a href="#" class="active"><i class="fas fa-shield-alt"></i> Escanear</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> Escanear</a>
                 <div class="divider"></div>
-                <a href="#"><i class="fas fa-sitemap"></i> Mapear</a>
+                <a href="#" class="active"><i class="fas fa-sitemap"></i> Mapear</a>
                 <div class="divider"></div>
                 <a href="#"><i class="fas fa-chart-line"></i> Análise</a>
                 <div class="divider"></div>
@@ -28,11 +28,11 @@
         </div>
         <a href="#" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
-    <main>
+    <main class="main-content">
         <h1>Dashboard de Vulnerabilidades</h1>
 
         <!-- Upload CSV -->
-        <input type="file" id="csvFile" accept=".csv" />
+        <input type="file" id="csvFile" accept=".csv" class="ficheiro"/>
 
         <!-- Filtro IP -->
         <div id="filtroContainer" style="display:none; margin-top: 15px;">
@@ -44,6 +44,7 @@
 
         <!-- Gráficos -->
         <div style="display: flex; flex-wrap: wrap; gap: 30px; margin-top: 20px;">
+            
             <canvas id="cvssChart" width="480" height="250"></canvas>
             <canvas id="vulnTypeChart" width="480" height="250"></canvas>
             <canvas id="exploitChart" width="480" height="250"></canvas>
@@ -52,7 +53,7 @@
 
         <!-- Tabela timeline -->
         <table id="timelineTable" border="1"
-            style="width: 100%; margin-top: 30px; border-collapse: collapse; font-family: Arial, sans-serif;">
+            style="width: 100%; margin-top: 30px; border-collapse: collapse; font-family: 'Poppins', sans-serif;">
             <thead>
                 <tr>
                     <th style="padding: 6px; background: #f0f0f0; text-align: left;">Data da Descoberta</th>
