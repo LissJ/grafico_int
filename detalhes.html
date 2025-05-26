@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Detalhes da CVE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <button id="voltar">&larr; Voltar</button>
+    <main>
+        <h1>Detalhes da Vulnerabilidade</h1>
+        <div class="campo"><strong>ID/CVE:</strong> <span id="cve"></span></div>
+        <div class="campo"><strong>CVSS:</strong> <span id="cvss"></span></div>
+        <div class="campo"><strong>Descrição:</strong>
+            <p id="descricao"></p>
+        </div>
+        <div class="campo"><strong>Serviço/Porta:</strong> <span id="servico"></span></div>
+        <div class="campo"><strong>Protocolo:</strong> <span id="protocolo"></span></div>
+        <div class="campo"><strong>Vendor/Produto:</strong> <span id="produto"></span></div>
+        <div class="campo"><strong>Data da Descoberta:</strong> <span id="data"></span></div>
+        <div class="campo"><strong>Tipo da Vulnerabilidade:</strong> <span id="tipo"></span></div>
+        <div class="campo"><strong>Exploit Disponível:</strong> <span id="exploit"></span></div>
+        <div class="campo"><strong>Host/IP Afetado:</strong> <span id="ip"></span></div>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const v = JSON.parse(sessionStorage.getItem('vulnDetalhe') || '{}');
+            if (!v['ID/CVE']) {
+                document.querySelector('main').innerHTML = '<p>Nenhum dado disponível. Retorne à dashboard.</p>';
+                return;
+            }
+            document.getElementById('cve').textContent = v['ID/CVE'];
+            document.getElementById('cvss').textContent = v['CVSS'] || 'N/A';
+            document.getElementById('descricao').textContent = v['Descricao'] || 'N/A';
+            document.getElementById('servico').textContent = v['Serviço/Porta'] || 'N/A';
+            document.getElementById('protocolo').textContent = v['Protocolo'] || 'N/A';
+            document.getElementById('produto').textContent = v['Vendor/Produto'] || 'N/A';
+            document.getElementById('data').textContent = v['Data da Descoberta'] || 'N/A';
+            document.getElementById('tipo').textContent = v['Tipo da Vulnerabilidade'] || 'N/A';
+            document.getElementById('exploit').textContent = v['Exploit Disponível'] || 'N/A';
+            document.getElementById('ip').textContent = v['Host/IP Afetado'] || 'N/A';
+        });
+        document.getElementById('voltar').addEventListener('click', () => history.back());
+    </script>
+</body>
+
+</html>
