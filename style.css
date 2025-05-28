@@ -13,7 +13,7 @@ body {
     font-family: 'Poppins', sans-serif;
     background-color: #ffffff;
     display: flex;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 .sidebar {
@@ -38,6 +38,7 @@ body {
 
 .main-content {
     margin-left: 17rem;
+    min-height: 65rem;
 }
 
 .logo-box {
