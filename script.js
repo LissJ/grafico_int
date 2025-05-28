@@ -30,7 +30,6 @@ window.addEventListener('pageshow', () => {
     }
 });
 
-
 // Carrega arquivo CSV e inicializa tudo
 document.getElementById('csvFile').addEventListener('change', function (e) {
     const file = e.target.files[0];
@@ -142,7 +141,7 @@ function gerarGraficos(data) {
             datasets: [{
                 label: 'Número de Vulnerabilidades por Severidade',
                 data: Object.values(severidades),
-                backgroundColor: ['#d32f2f', '#f57c00', '#fbc02d', '#0288d1', '#9e9e9e']
+                backgroundColor: ['#002171', '#1565C0', '#1976D2', '#42A5F5', '#90CAF9'] // tons de azul
             }]
         },
         options: {
@@ -159,7 +158,10 @@ function gerarGraficos(data) {
         type: 'pie',
         data: {
             labels: Object.keys(tipos),
-            datasets: [{ data: Object.values(tipos) }]
+            datasets: [{
+                data: Object.values(tipos),
+                backgroundColor: ['#002171', '#42A5F5', '#90CAF9', '#1565C0', '#0D47A1']
+            }]
         },
         options: {
             animation: { duration: 400 },
@@ -168,19 +170,37 @@ function gerarGraficos(data) {
         }
     });
 
-    // --- Cria Exploit Chart ---
+    // --- Cria Exploit Chart (agora gráfico de vulnerabilidades por IP) ---
+    const vulnerabilidadesPorIP = {};
+    data.forEach(v => {
+        const ip = v['Host/IP Afetado'] || 'Desconhecido';
+        vulnerabilidadesPorIP[ip] = (vulnerabilidadesPorIP[ip] || 0) + 1;
+    });
+
     exploitChart = new Chart(document.getElementById('exploitChart'), {
-        type: 'doughnut',
+        type: 'bar',
         data: {
-            labels: Object.keys(exploits),
-            datasets: [{ data: Object.values(exploits) }]
+            labels: Object.keys(vulnerabilidadesPorIP),
+            datasets: [{
+                label: 'Número de Vulnerabilidades por IP',
+                data: Object.values(vulnerabilidadesPorIP),
+                backgroundColor: '#0D47A1'  // verde, pode trocar a cor aqui
+            }]
         },
         options: {
+            indexAxis: 'x', // barra vertical
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            },
             animation: { duration: 400 },
             responsive: false,
             maintainAspectRatio: false,
         }
     });
+
 
     // --- Cria Service/Port Chart ---
     const servicos = {};
@@ -192,7 +212,10 @@ function gerarGraficos(data) {
         type: 'bar',
         data: {
             labels: Object.keys(servicos),
-            datasets: [{ data: Object.values(servicos) }]
+            datasets: [{
+                data: Object.values(servicos),
+                backgroundColor: '#42A5F5' // azul claro uniforme
+            }]
         },
         options: {
             indexAxis: 'y',

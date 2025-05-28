@@ -2,16 +2,61 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Detalhes da CVE</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Detalhes da Vulnerabilidade</title>
+    <link rel="stylesheet" href="detalhes.css" />
 </head>
 
 <body>
-    <button id="voltar">&larr; Voltar</button>
-    <main>
-        <h1>Detalhes da Vulnerabilidade</h1>
+
+    <div class="sidebar">
+        <div>
+            <div class="logo-box">
+                <img src="assets/logo.png" alt="Logo"
+                    style="height: 45px; vertical-align: middle; margin-right: 8px;" />
+                <img src="assets/zvulny_blue.png" alt="zVulny" style="height: 36px; vertical-align: middle;" />
+            </div>
+            <div class="menu">
+                <a href="escanear.html">
+                    <img src="assets/shield.png" alt="Escanear"
+                        style="height: 20px; vertical-align: middle; margin-right: 8px;" />
+                    Escanear
+                </a>
+                <div class="divider"></div>
+                <a href="mapear.html" class="active">
+                    <img src="assets/locate.png" alt="Mapear"
+                        style="height: 20px; vertical-align: middle; margin-right: 8px;" />
+                    Mapear
+                </a>
+                <div class="divider"></div>
+                <a href="analise.html">
+                    <img src="assets/analytics.png" alt="Análise"
+                        style="height: 20px; vertical-align: middle; margin-right: 8px;" />
+                    Análise
+                </a>
+                <div class="divider"></div>
+                <a href="sugestao.html">
+                    <img src="assets/lamp.png" alt="Sugestão"
+                        style="height: 20px; vertical-align: middle; margin-right: 8px;" />
+                    Sugestão
+                </a>
+            </div>
+        </div>
+        <a href="logout.html" class="logout">
+            <img src="assets/logout.png" alt="Logout"
+                style="height: 20px; vertical-align: middle; margin-right: 8px;" />
+            Logout
+        </a>
+    </div>
+
+    <main class="main-content">
+        <div class="titulo-detalhe">
+            <img id="voltar" src="assets/arrow-back.png" alt="Voltar" />
+            <h1>Detalhes da Vulnerabilidade</h1>
+        </div>
+
+
         <div class="campo"><strong>ID/CVE:</strong> <span id="cve"></span></div>
         <div class="campo"><strong>CVSS:</strong> <span id="cvss"></span></div>
         <div class="campo"><strong>Descrição:</strong>
@@ -25,6 +70,7 @@
         <div class="campo"><strong>Exploit Disponível:</strong> <span id="exploit"></span></div>
         <div class="campo"><strong>Host/IP Afetado:</strong> <span id="ip"></span></div>
     </main>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const v = JSON.parse(sessionStorage.getItem('vulnDetalhe') || '{}');
@@ -43,8 +89,10 @@
             document.getElementById('exploit').textContent = v['Exploit Disponível'] || 'N/A';
             document.getElementById('ip').textContent = v['Host/IP Afetado'] || 'N/A';
         });
+
         document.getElementById('voltar').addEventListener('click', () => history.back());
     </script>
+
 </body>
 
 </html>

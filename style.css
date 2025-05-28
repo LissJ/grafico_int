@@ -17,10 +17,14 @@ body {
 }
 
 .sidebar {
-    position: fixed;       /* fixa a sidebar na tela */
-    top: 0;                /* começa no topo */
-    left: 0;               /* fixada na esquerda */
-    height: 100vh;         /* altura total da viewport */
+    position: fixed;
+    /* fixa a sidebar na tela */
+    top: 0;
+    /* começa no topo */
+    left: 0;
+    /* fixada na esquerda */
+    height: 100vh;
+    /* altura total da viewport */
     width: 240px;
     background: linear-gradient(180deg, #1947e5, #3d65f4);
     display: flex;
@@ -28,17 +32,18 @@ body {
     justify-content: space-between;
     color: white;
     padding: 20px 0;
-    z-index: 1000;         /* garante que fique acima do conteúdo */
+    z-index: 1000;
+    /* garante que fique acima do conteúdo */
 }
 
-.main-content{
+.main-content {
     margin-left: 17rem;
 }
 
 .logo-box {
     background-color: white;
-    border-top-right-radius: 25px;
-    border-bottom-right-radius: 25px;
+    border-top-right-radius: 35px;
+    border-bottom-right-radius: 35px;
     padding: 10px 42px;
     margin: 10px 20px 30px 0px;
 
@@ -55,7 +60,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 20px;
+    padding: 17px 45px;
     text-decoration: none;
     color: white;
     font-weight: 500;
@@ -80,7 +85,7 @@ body {
     gap: 10px;
 }
 
-.graficoAll{
+.graficoAll {
     width: 1160px;
     display: flex;
     flex-wrap: wrap;
@@ -97,7 +102,10 @@ body {
 }
 
 #ipSelect {
-    padding: 6px 8px;
+    font-family: 'Poppins', sans-serif;
+    border-color: #2446CE;
+    border-radius: 8px;
+    padding: 8px 10px;
     width: 280px;
     font-size: 16px;
 }
@@ -113,17 +121,17 @@ canvas {
     box-shadow: 0 0 8px rgb(0 0 0 / 0.1);
 }
 
-.ficheiro{
+.ficheiro {
     font-family: 'Poppins';
 }
 
-.verMaisContainer{
+.verMaisContainer {
     text-align: end;
     margin-top: 1rem;
-    
+
 }
 
-.verMaisBtn{
+.verMaisBtn {
     padding: 6px 12px;
     cursor: pointer;
     margin-bottom: 8rem;
