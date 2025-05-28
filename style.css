@@ -3,6 +3,11 @@
     src: url(../assets/fonts/Poppins-Regular.ttf);
 }
 
+@font-face {
+    font-family: 'Poppins-Bold';
+    src: url(assets/fonts/Poppins-Bold.ttf);
+}
+
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
@@ -57,7 +62,7 @@ body {
 }
 
 .menu .active {
-    font-weight: bold;
+    font-family: 'Poppins-Bold', sans-serif;
 }
 
 .divider {
@@ -75,12 +80,19 @@ body {
     gap: 10px;
 }
 
+.graficoAll{
+    width: 1160px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
 /* h1 {
     text-align: center;
 } */
 
 #filtroContainer {
-    text-align: center;
     margin-bottom: 20px;
 }
 
