@@ -14,7 +14,9 @@
     <div class="sidebar">
         <div>
             <div class="logo-box">
-                <span class="logo"><i class="fas fa-lock"></i> zVulny</span>
+                <img src="assets/logo.png" alt="Logo"
+                    style="height: 45px; vertical-align: middle; margin-right: 8px;" />
+                <img src="assets/zvulny_blue.png" alt="zVulny" style="height: 36px; vertical-align: middle;" />
             </div>
             <div class="menu">
                 <a href="#"><i class="fas fa-shield-alt"></i> Escanear</a>
@@ -32,7 +34,7 @@
         <h1>Dashboard de Vulnerabilidades</h1>
 
         <!-- Upload CSV -->
-        <input type="file" id="csvFile" accept=".csv" class="ficheiro"/>
+        <input type="file" id="csvFile" accept=".csv" class="ficheiro" />
 
         <!-- Filtro IP -->
         <div id="filtroContainer" style="display:none; margin-top: 15px;">
@@ -64,9 +66,12 @@
                 <!-- Será populado dinamicamente pelo JS com flat list -->
             </tbody>
         </table>
+        <!-- Botão Ver Mais/Tudo/Menos -->
+        <div id="verMaisContainer" class="verMaisContainer">
+            <button id="verMaisBtn" class="verMaisBtn">Ver mais</button>
+        </div>
+
     </main>
-
-
     <script src="script.js"></script>
 </body>
 

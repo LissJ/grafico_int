@@ -213,8 +213,24 @@ function gerarGraficos(data) {
             parseDateBR(formatDateToBR(b['Data da Descoberta']))
         );
 
-    ordenados.forEach(v => {
+    tbody.innerHTML = '';
+
+    const MAX_LINHAS = 5;
+    let indiceAtual = MAX_LINHAS;
+
+    const container = document.getElementById('timelineTable').parentElement;
+    const todasAsLinhas = [];
+
+    ordenados.forEach((v, index) => {
         const tr = document.createElement('tr');
+        tr.classList.add('linha-timeline');
+
+        tr.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        tr.style.opacity = index < MAX_LINHAS ? '1' : '0';
+        tr.style.transform = index < MAX_LINHAS ? 'translateY(0)' : 'translateY(-20px)';
+        tr.style.overflow = 'hidden';
+        tr.style.display = index < MAX_LINHAS ? 'table-row' : 'none';
+
         ['Data da Descoberta', 'Vendor/Produto', 'ID/CVE'].forEach((f, i) => {
             const td = document.createElement('td');
             td.textContent = i === 0 ? formatDateToBR(v[f]) : v[f];
@@ -223,7 +239,6 @@ function gerarGraficos(data) {
         });
 
         tr.addEventListener('click', () => {
-            // Salva CVE e estado da dashboard
             sessionStorage.setItem('vulnDetalhe', JSON.stringify(v));
             sessionStorage.setItem('dashboardState', JSON.stringify({
                 dadosGlobais,
@@ -233,5 +248,67 @@ function gerarGraficos(data) {
         });
 
         tbody.appendChild(tr);
+        todasAsLinhas.push(tr);
+    });
+
+    // Pega o botão no HTML:
+    const botao = document.getElementById('verMaisBtn');
+
+    if (ordenados.length <= MAX_LINHAS) {
+        // Se poucas linhas, esconde o botão
+        botao.style.display = 'none';
+    } else {
+        botao.style.display = 'inline-block';
+    }
+
+    let estado = 'mais'; // mais, tudo, menos
+
+    botao.addEventListener('click', () => {
+        if (estado === 'mais') {
+            const limite = Math.min(indiceAtual + MAX_LINHAS, todasAsLinhas.length);
+            for (let i = indiceAtual; i < limite; i++) {
+                const tr = todasAsLinhas[i];
+                tr.style.display = 'table-row';
+                setTimeout(() => {
+                    tr.style.opacity = '1';
+                    tr.style.transform = 'translateY(0)';
+                }, (i - indiceAtual) * 100);
+            }
+            indiceAtual = limite;
+            if (indiceAtual >= todasAsLinhas.length) {
+                botao.textContent = 'Ver menos';
+                estado = 'menos';
+            } else {
+                botao.textContent = 'Ver tudo';
+                estado = 'tudo';
+            }
+        } else if (estado === 'tudo') {
+            for (let i = indiceAtual; i < todasAsLinhas.length; i++) {
+                const tr = todasAsLinhas[i];
+                tr.style.display = 'table-row';
+                setTimeout(() => {
+                    tr.style.opacity = '1';
+                    tr.style.transform = 'translateY(0)';
+                }, (i - indiceAtual) * 100);
+            }
+            indiceAtual = todasAsLinhas.length;
+            botao.textContent = 'Ver menos';
+            estado = 'menos';
+        } else if (estado === 'menos') {
+            for (let i = MAX_LINHAS; i < todasAsLinhas.length; i++) {
+                const tr = todasAsLinhas[i];
+                setTimeout(() => {
+                    tr.style.opacity = '0';
+                    tr.style.transform = 'translateY(-20px)';
+                }, (todasAsLinhas.length - i) * 60);
+
+                setTimeout(() => {
+                    tr.style.display = 'none';
+                }, 400 + (todasAsLinhas.length - i) * 60);
+            }
+            indiceAtual = MAX_LINHAS;
+            botao.textContent = 'Ver mais';
+            estado = 'mais';
+        }
     });
 }
