@@ -22,7 +22,7 @@ window.addEventListener('pageshow', () => {
         popularSelectIPs();
         gerarGraficos(
             filtroIP
-                ? dadosGlobais.filter(v => v['Host/IP Afetado'] === filtroIP)
+                ? dadosGlobais.filter(v => v['ip'] === filtroIP)
                 : dadosGlobais
         );
 
@@ -39,10 +39,10 @@ document.getElementById('csvFile').addEventListener('change', function (e) {
     reader.onload = function (e) {
         const text = e.target.result;
         const linhas = text.trim().split('\n');
-        const cabecalhos = linhas[0].split(';');
+        const cabecalhos = linhas[0].split(',');
 
         dadosGlobais = linhas.slice(1).map(linha => {
-            const colunas = linha.split(';');
+            const colunas = linha.split(',');
             const obj = {};
             cabecalhos.forEach((col, idx) => {
                 obj[col.trim()] = colunas[idx]?.trim();
@@ -66,7 +66,7 @@ function popularSelectIPs() {
         select.remove(1);
     }
 
-    const ips = [...new Set(dadosGlobais.map(v => v['Host/IP Afetado']).filter(ip => ip))].sort();
+    const ips = [...new Set(dadosGlobais.map(v => v['ip']).filter(ip => ip))].sort();
     ips.forEach(ip => {
         const opt = document.createElement('option');
         opt.value = ip;
@@ -77,7 +77,7 @@ function popularSelectIPs() {
     select.onchange = () => {
         filtroIP = select.value;
         const filtrados = filtroIP
-            ? dadosGlobais.filter(v => v['Host/IP Afetado'] === filtroIP)
+            ? dadosGlobais.filter(v => v['ip'] === filtroIP)
             : dadosGlobais;
         gerarGraficos(filtrados);
     };
@@ -85,7 +85,7 @@ function popularSelectIPs() {
 
 // Filtra array por IP
 function filtrarPorIP(dados, ip) {
-    return ip ? dados.filter(v => v['Host/IP Afetado'] === ip) : dados;
+    return ip ? dados.filter(v => v['ip'] === ip) : dados;
 }
 
 // Converte DD/MM/AAAA para Date
@@ -116,18 +116,18 @@ function gerarGraficos(data) {
     const exploits = { Sim: 0, Nao: 0 };
 
     data.forEach(v => {
-        const cvss = parseFloat(v['CVSS']) || 0;
+        const cvss = parseFloat(v['cvss_score']) || 0;
         if (cvss >= 9) severidades['Crítica']++;
         else if (cvss >= 7) severidades['Alta']++;
         else if (cvss >= 4) severidades['Média']++;
         else if (cvss > 0) severidades['Baixa']++;
         else severidades['Informativa']++;
 
-        const tp = v['Tipo da Vulnerabilidade'] || 'Outro';
+        const tp = v['tipo_vulnerabilidade'] || 'Outro';
         tipos[tp] = (tipos[tp] || 0) + 1;
 
-        const ex = v['Exploit Disponível'];
-        if (ex === 'Sim' || ex === 'Nao') exploits[ex]++;
+        const ex = v['exploit_disponivel'];
+        if (ex === 'Sim' || ex === 'Não') exploits[ex]++;
     });
 
     // --- Destroi gráficos antigos ---
@@ -173,7 +173,7 @@ function gerarGraficos(data) {
     // --- Cria Exploit Chart (agora gráfico de vulnerabilidades por IP) ---
     const vulnerabilidadesPorIP = {};
     data.forEach(v => {
-        const ip = v['Host/IP Afetado'] || 'Desconhecido';
+        const ip = v['ip'] || 'Desconhecido';
         vulnerabilidadesPorIP[ip] = (vulnerabilidadesPorIP[ip] || 0) + 1;
     });
 
@@ -205,7 +205,7 @@ function gerarGraficos(data) {
     // --- Cria Service/Port Chart ---
     const servicos = {};
     data.forEach(v => {
-        const key = `${v['Serviço/Porta']} (${v['Protocolo']})`;
+        const key = `${v['servico_porta']} (${v['protocolo']})`;
         servicos[key] = (servicos[key] || 0) + 1;
     });
     serviceChart = new Chart(document.getElementById('serviceChart'), {
@@ -230,10 +230,10 @@ function gerarGraficos(data) {
     tbody.innerHTML = '';
 
     const ordenados = data
-        .filter(v => v['Data da Descoberta'] && v['Vendor/Produto'] && v['ID/CVE'])
+        .filter(v => v['data_descoberta'] && v['vendor_product'] && v['cve_id'])
         .sort((a, b) =>
-            parseDateBR(formatDateToBR(a['Data da Descoberta'])) -
-            parseDateBR(formatDateToBR(b['Data da Descoberta']))
+            parseDateBR(formatDateToBR(a['data_descoberta'])) -
+            parseDateBR(formatDateToBR(b['data_descoberta']))
         );
 
     tbody.innerHTML = '';
@@ -254,7 +254,7 @@ function gerarGraficos(data) {
         tr.style.overflow = 'hidden';
         tr.style.display = index < MAX_LINHAS ? 'table-row' : 'none';
 
-        ['Data da Descoberta', 'Vendor/Produto', 'ID/CVE'].forEach((f, i) => {
+        ['data_descoberta', 'vendor_product', 'cve_id'].forEach((f, i) => {
             const td = document.createElement('td');
             td.textContent = i === 0 ? formatDateToBR(v[f]) : v[f];
             td.style.padding = '6px';
@@ -269,6 +269,7 @@ function gerarGraficos(data) {
             }));
             window.location.href = 'detalhes.html';
         });
+
 
         tbody.appendChild(tr);
         todasAsLinhas.push(tr);
