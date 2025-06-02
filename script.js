@@ -2,6 +2,64 @@
 let dadosGlobais = [];
 let cvssChart, vulnTypeChart, exploitChart, serviceChart;
 let filtroIP = '';
+let filtroCor = ''; // <<< NOVO: guarda o valor selecionado no filtro de cor
+
+/**
+ * Lê todo o texto CSV e devolve uma “matriz” JS (array de linhas),
+ * onde cada linha é um array de colunas. 
+ * Essa função respeita aspas, vírgulas internas e quebras de linha dentro das aspas.
+ */
+function parseCSV(text) {
+    const linhas = [];
+    let curLine = [];
+    let curCell = '';
+    let insideQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+
+        if (char === '"' && (i === 0 || text[i - 1] !== '\\')) {
+            insideQuotes = !insideQuotes;
+            continue;
+        }
+
+        if (char === ',' && !insideQuotes) {
+            curLine.push(curCell.trim());
+            curCell = '';
+            continue;
+        }
+
+        if ((char === '\n' || char === '\r') && !insideQuotes) {
+            if (char === '\r' && text[i + 1] === '\n') {
+                i++;
+            }
+            curLine.push(curCell.trim());
+            curCell = '';
+            linhas.push(curLine);
+            curLine = [];
+            continue;
+        }
+
+        curCell += char;
+    }
+
+    if (curCell.length > 0) {
+        curLine.push(curCell.trim());
+    }
+    if (curLine.length > 0) {
+        linhas.push(curLine);
+    }
+
+    // Remove aspas externas de cada célula
+    return linhas.map(linha =>
+        linha.map(cel => {
+            if (cel.startsWith('"') && cel.endsWith('"')) {
+                return cel.slice(1, -1);
+            }
+            return cel;
+        })
+    );
+}
 
 /**
  * Restaura o estado da dashboard quando volta da página de detalhes
@@ -14,11 +72,12 @@ window.addEventListener('pageshow', () => {
         dadosGlobais = savedDados;
         filtroIP = savedFiltro;
 
-        // Exibe e ajusta o filtro
+        // Ajusta os filtros na interface
         document.getElementById('filtroContainer').style.display = 'block';
         document.getElementById('ipSelect').value = filtroIP;
+        document.getElementById('colorSelect').value = filtroCor; // <<< NOVO
 
-        // Recria o select e os gráficos
+        // Recria o select de IPs e os gráficos
         popularSelectIPs();
         gerarGraficos(
             filtroIP
@@ -38,22 +97,29 @@ document.getElementById('csvFile').addEventListener('change', function (e) {
     const reader = new FileReader();
     reader.onload = function (e) {
         const text = e.target.result;
-        const linhas = text.trim().split('\n');
-        const cabecalhos = linhas[0].split(',');
 
-        dadosGlobais = linhas.slice(1).map(linha => {
-            const colunas = linha.split(',');
+        // Usa parseCSV para lidar com vírgulas internas em aspas
+        const matriz = parseCSV(text);
+
+        // Cabeçalho
+        const cabecalhos = matriz[0];
+
+        // Dados
+        dadosGlobais = matriz.slice(1).map(colunas => {
             const obj = {};
             cabecalhos.forEach((col, idx) => {
-                obj[col.trim()] = colunas[idx]?.trim();
+                obj[col] = colunas[idx] || '';
             });
             return obj;
         });
 
         popularSelectIPs();
         filtroIP = '';
+        filtroCor = ''; // <<< NOVO: zera filtro de cor ao trocar o CSV
         document.getElementById('ipSelect').value = '';
+        document.getElementById('colorSelect').value = ''; // <<< NOVO
         document.getElementById('filtroContainer').style.display = 'block';
+
         gerarGraficos(dadosGlobais);
     };
     reader.readAsText(file);
@@ -96,9 +162,12 @@ function parseDateBR(dateStr) {
     return new Date(partes[2], partes[1] - 1, partes[0]);
 }
 
-// Converte AAAA-MM-DD para DD/MM/AAAA ou retorna tal como está
+// Converte AAAA-MM-DD ou AAAA-MM-DDTHH:MM:SS para DD/MM/AAAA ou retorna tal como está
 function formatDateToBR(dateStr) {
     if (!dateStr) return '';
+    if (dateStr.includes('T')) {
+        dateStr = dateStr.split('T')[0];
+    }
     if (dateStr.includes('-')) {
         const partes = dateStr.split('-');
         if (partes.length === 3) {
@@ -110,7 +179,28 @@ function formatDateToBR(dateStr) {
 
 // Gera todos os gráficos e popula a tabela com clique para detalhes
 function gerarGraficos(data) {
-    // --- Calcula métricas ---
+    // 1) APLICAR FILTRO DE COR ANTES DE PINTAR A TABELA:
+    let dadosFiltrados = data.slice();
+    if (filtroCor) {
+        dadosFiltrados = dadosFiltrados.filter(v => {
+            const cvss = parseFloat(v['cvss_score']) || 0;
+            if (filtroCor === 'red') {
+                return cvss >= 9;
+            }
+            if (filtroCor === 'orange') {
+                return cvss >= 7 && cvss < 9;
+            }
+            if (filtroCor === 'green') {
+                return cvss > 0 && cvss < 7;
+            }
+            if (filtroCor === 'gray') {
+                return cvss === 0;
+            }
+            return true;
+        });
+    }
+
+    // --- Calcula métricas (gráficos) com base em data (não muda por cor) ---
     const severidades = { 'Crítica': 0, 'Alta': 0, 'Média': 0, 'Baixa': 0, 'Informativa': 0 };
     const tipos = {};
     const exploits = { Sim: 0, Nao: 0 };
@@ -141,7 +231,7 @@ function gerarGraficos(data) {
             datasets: [{
                 label: 'Número de Vulnerabilidades por Severidade',
                 data: Object.values(severidades),
-                backgroundColor: ['#002171', '#1565C0', '#1976D2', '#42A5F5', '#90CAF9'] // tons de azul
+                backgroundColor: ['#002171', '#1565C0', '#1976D2', '#42A5F5', '#90CAF9']
             }]
         },
         options: {
@@ -170,7 +260,7 @@ function gerarGraficos(data) {
         }
     });
 
-    // --- Cria Exploit Chart (agora gráfico de vulnerabilidades por IP) ---
+    // --- Cria Exploit Chart (vulnerabilidades por IP) ---
     const vulnerabilidadesPorIP = {};
     data.forEach(v => {
         const ip = v['ip'] || 'Desconhecido';
@@ -184,11 +274,11 @@ function gerarGraficos(data) {
             datasets: [{
                 label: 'Número de Vulnerabilidades por IP',
                 data: Object.values(vulnerabilidadesPorIP),
-                backgroundColor: '#0D47A1'  // verde, pode trocar a cor aqui
+                backgroundColor: '#0D47A1'
             }]
         },
         options: {
-            indexAxis: 'x', // barra vertical
+            indexAxis: 'x',
             scales: {
                 y: {
                     beginAtZero: true,
@@ -200,7 +290,6 @@ function gerarGraficos(data) {
             maintainAspectRatio: false,
         }
     });
-
 
     // --- Cria Service/Port Chart ---
     const servicos = {};
@@ -214,7 +303,7 @@ function gerarGraficos(data) {
             labels: Object.keys(servicos),
             datasets: [{
                 data: Object.values(servicos),
-                backgroundColor: '#42A5F5' // azul claro uniforme
+                backgroundColor: '#42A5F5'
             }]
         },
         options: {
@@ -225,18 +314,16 @@ function gerarGraficos(data) {
         }
     });
 
-    // --- Popula Tabela e adiciona clique para detalhes ---
+    // --- Popula Tabela e adiciona clique para detalhes ---  
     const tbody = document.querySelector('#timelineTable tbody');
     tbody.innerHTML = '';
 
-    const ordenados = data
-        .filter(v => v['data_descoberta'] && v['vendor_product'] && v['cve_id'])
+    const ordenados = dadosFiltrados
+        .filter(v => v['data_descoberta'] && v['title'] && v['cve_id'])
         .sort((a, b) =>
             parseDateBR(formatDateToBR(a['data_descoberta'])) -
             parseDateBR(formatDateToBR(b['data_descoberta']))
         );
-
-    tbody.innerHTML = '';
 
     const MAX_LINHAS = 5;
     let indiceAtual = MAX_LINHAS;
@@ -254,10 +341,36 @@ function gerarGraficos(data) {
         tr.style.overflow = 'hidden';
         tr.style.display = index < MAX_LINHAS ? 'table-row' : 'none';
 
-        ['data_descoberta', 'vendor_product', 'cve_id'].forEach((f, i) => {
+        ['data_descoberta', 'title', 'cve_id'].forEach((f, i) => {
             const td = document.createElement('td');
-            td.textContent = i === 0 ? formatDateToBR(v[f]) : v[f];
+            let valor = v[f];
+
+            if (i === 0) {
+                td.textContent = formatDateToBR(valor);
+            } else {
+                td.textContent = valor;
+            }
+
             td.style.padding = '6px';
+
+            // Aplica cor na coluna cve_id com base na nota CVSS
+            if (f === 'cve_id') {
+                const nota = parseFloat(v['cvss_score']) || 0;
+
+                if (nota >= 9) {
+                    td.style.color = 'red';
+                    td.style.fontWeight = 'bold';
+                } else if (nota >= 7) {
+                    td.style.color = 'orange';
+                    td.style.fontWeight = 'bold';
+                } else if (nota > 0) {
+                    td.style.color = 'green';
+                    td.style.fontWeight = 'bold';
+                } else {
+                    td.style.color = 'gray';
+                }
+            }
+
             tr.appendChild(td);
         });
 
@@ -270,16 +383,13 @@ function gerarGraficos(data) {
             window.location.href = 'detalhes.html';
         });
 
-
         tbody.appendChild(tr);
         todasAsLinhas.push(tr);
     });
 
-    // Pega o botão no HTML:
+    // Botão “Ver mais / Ver menos”
     const botao = document.getElementById('verMaisBtn');
-
     if (ordenados.length <= MAX_LINHAS) {
-        // Se poucas linhas, esconde o botão
         botao.style.display = 'none';
     } else {
         botao.style.display = 'inline-block';
@@ -336,3 +446,19 @@ function gerarGraficos(data) {
         }
     });
 }
+
+// ====== Registra o listener do filtro de “cor” (severidade) ======
+// Isso pode ficar no final do arquivo JS, depois de todas as funções.
+// Só certifica de que o elemento #colorSelect já exista no HTML.
+document.addEventListener('DOMContentLoaded', () => {
+    const colorSelect = document.getElementById('colorSelect');
+    if (colorSelect) {
+        colorSelect.onchange = () => {
+            filtroCor = colorSelect.value;              // guarda a cor selecionada
+            const filtradosPorIP = filtroIP
+                ? dadosGlobais.filter(v => v['ip'] === filtroIP)
+                : dadosGlobais;
+            gerarGraficos(filtradosPorIP);
+        };
+    }
+});

@@ -111,6 +111,15 @@ body {
     font-size: 16px;
 }
 
+#colorSelect {
+    font-family: 'Poppins', sans-serif;
+    border-color: #2446CE;
+    border-radius: 8px;
+    padding: 8px 10px;
+    width: 280px;
+    font-size: 16px;
+}
+
 canvas {
     max-width: 480px;
     max-height: 500px;

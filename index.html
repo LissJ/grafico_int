@@ -63,6 +63,15 @@
             <select id="ipSelect">
                 <option value="">Todos</option>
             </select>
+
+            <label for="colorSelect" style="margin-left: 16px;">Filtrar Severidade:</label>
+            <select id="colorSelect">
+                <option value="">Todos</option>
+                <option value="red">Crítica (CVSS ≥ 9)</option>
+                <option value="orange">Alta (7 ≤ CVSS < 9)</option>
+                <option value="green">Média/Baixa (0 < CVSS < 7)</option>
+                <option value="gray">Informativa (CVSS = 0)</option>
+            </select>
         </div>
 
         <!-- Gráficos -->
@@ -79,7 +88,7 @@
             <thead>
                 <tr>
                     <th style="padding: 6px; background: #f0f0f0; text-align: left;">Data da Descoberta</th>
-                    <th style="padding: 6px; background: #f0f0f0; text-align: left;">Vendor/Product</th>
+                    <th style="padding: 6px; background: #f0f0f0; text-align: left;">Título</th>
                     <th style="padding: 6px; background: #f0f0f0; text-align: left;">ID da CVE</th>
                 </tr>
             </thead>
