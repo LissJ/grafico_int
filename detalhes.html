@@ -9,7 +9,9 @@
 </head>
 
 <body>
-
+    <!-- ======================
+         SIDEBAR FIXA (esquerda)
+         ====================== -->
     <div class="sidebar">
         <div>
             <div class="logo-box">
@@ -50,51 +52,102 @@
         </a>
     </div>
 
+    <!-- ======================
+         CONTEÚDO PRINCIPAL (direita)
+         ====================== -->
     <main class="main-content">
+        <!-- Cabeçalho com seta “voltar” + título “Detalhes” -->
         <div class="titulo-detalhe">
-            <img id="voltar" src="assets/arrow-back.png" alt="Voltar" />
-            <h1>Detalhes da Vulnerabilidade</h1>
+            <img id="voltar" src="assets/arrow-back.png" alt="Voltar" class="icon-voltar" />
+            <h1>Detalhes</h1>
         </div>
 
-        <div class="campo"><strong>ID/CVE:</strong> <span id="cve"></span></div>
-        <div class="campo"><strong>CVSS:</strong> <span id="cvss"></span></div>
-        <div class="campo"><strong>Descrição:</strong>
-            <p id="descricao"></p>
+        <!-- Grid de 4 colunas: IP afetado | ID da CVE | CVSS | Protocolo -->
+        <div class="info-header">
+            <div class="info-item">
+                <span class="label">IP afetado</span>
+                <span id="ip" class="value"></span>
+            </div>
+            <div class="info-item">
+                <span class="label">ID da CVE</span>
+                <span id="cve" class="value"></span>
+            </div>
+            <div class="info-item">
+                <span class="label">CVSS</span>
+                <span id="cvss" class="value"></span> <!-- aqui fica a nota CVSS -->
+            </div>
+            <div class="info-item">
+                <span class="label">Protocolo</span>
+                <span id="protocolo" class="value"></span>
+            </div>
         </div>
-        <div class="campo"><strong>Serviço/Porta:</strong> <span id="servico"></span></div>
-        <div class="campo"><strong>Protocolo:</strong> <span id="protocolo"></span></div>
-        <div class="campo"><strong>Vendor/Produto:</strong> <span id="produto"></span></div>
-        <div class="campo"><strong>Data da Descoberta:</strong> <span id="data"></span></div>
-        <div class="campo"><strong>Tipo da Vulnerabilidade:</strong> <span id="tipo"></span></div>
-        <div class="campo"><strong>Exploit Disponível:</strong> <span id="exploit"></span></div>
-        <div class="campo"><strong>Host/IP Afetado:</strong> <span id="ip"></span></div>
+        <hr class="divider-hr" />
+
+        <!-- Bloco “Descrição” (texto longo) -->
+        <div class="section">
+            <span class="section-title">Descrição</span>
+            <p id="descricao" class="section-text"></p>
+        </div>
+
+        <!-- Demais campos dinâmicos -->
+        <div class="section">
+            <span class="label">Serviço e porta</span>
+            <span id="servico" class="section-value"></span>
+        </div>
+        <div class="section">
+            <span class="label">Data da descoberta</span>
+            <span id="data" class="section-value"></span>
+        </div>
+        <div class="section">
+            <span class="label">Exploit disponível</span>
+            <span id="exploit" class="section-value"></span>
+        </div>
+        <div class="section">
+            <span class="label">Família do Boletim</span>
+            <span id="bulletin" class="section-value"></span>
+        </div>
+        <div class="section">
+            <span class="label">Link da CVE</span>
+            <a id="href" href="#" target="_blank" class="section-link">Abrir boletim.</a>
+        </div>
     </main>
 
+    <!-- ==============
+         SCRIPT DINÂMICO
+         ============== -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Recupera do sessionStorage o objeto “vulnDetalhe” (JSON)
             const v = JSON.parse(sessionStorage.getItem('vulnDetalhe') || '{}');
 
-            // Verifica se há um objeto válido com cve_id
+            // Se não vier nada válido, exibe mensagem:
             if (!v['cve_id']) {
-                document.querySelector('main').innerHTML = '<p>Nenhum dado disponível. Retorne à dashboard.</p>';
+                document.querySelector('main').innerHTML =
+                    '<p>Nenhum dado disponível. Retorne à dashboard.</p>';
                 return;
             }
 
-            document.getElementById('cve').textContent = v['cve_id'];
-            document.getElementById('cvss').textContent = v['cvss_score'] || 'N/A';
+            // Preenche todos os campos conforme as chaves definidas
+            document.getElementById('ip').textContent = v['ip'] || 'N/A';
+            document.getElementById('cve').textContent = v['cve_id'] || 'N/A';
+            document.getElementById('cvss').textContent = v['cvss_score'] || 'Informativa';
+            document.getElementById('protocolo').textContent = v['protocolo'] || 'N/A';
             document.getElementById('descricao').textContent = v['description'] || 'N/A';
             document.getElementById('servico').textContent = v['servico_porta'] || 'N/A';
-            document.getElementById('protocolo').textContent = v['protocolo'] || 'N/A';
-            document.getElementById('produto').textContent = v['vendor_product'] || 'N/A';
             document.getElementById('data').textContent = v['data_descoberta'] || 'N/A';
-            document.getElementById('tipo').textContent = v['tipo_vulnerabilidade'] || 'N/A';
             document.getElementById('exploit').textContent = v['exploit_disponivel'] || 'N/A';
-            document.getElementById('ip').textContent = v['ip'] || 'N/A';
+            document.getElementById('bulletin').textContent = v['bulletin_family'] || 'N/A';
+            document.getElementById('href').href = v['href'] || '#';
+
+            // Se não houver link, escondemos o <a> “Abrir boletim”
+            if (!v['href']) {
+                document.getElementById('href').style.display = 'none';
+            }
         });
 
+        // Configura a seta “voltar” para retornar à página anterior
         document.getElementById('voltar').addEventListener('click', () => history.back());
     </script>
-
 </body>
 
 </html>

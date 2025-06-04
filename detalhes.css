@@ -1,30 +1,41 @@
+/* ============================
+   ===== IMPORTA FONTS ========
+   ============================ */
 @font-face {
     font-family: 'Poppins';
-    src: url(../assets/fonts/Poppins-Regular.ttf);
+    src: url('../assets/fonts/Poppins-Regular.ttf');
 }
 
 @font-face {
     font-family: 'Poppins-Bold';
-    src: url(assets/fonts/Poppins-Bold.ttf);
+    src: url('../assets/fonts/Poppins-Bold.ttf');
+}
+
+/* ============================
+   ===== RESET E BODY ========
+   ============================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    margin: 0;
     font-family: 'Poppins', sans-serif;
     background-color: #ffffff;
     display: flex;
     height: 100vh;
+    color: #000000;
 }
 
+/* ============================
+   ===== SIDEBAR (ESQUERDA) ====
+   ============================ */
 .sidebar {
     position: fixed;
-    /* fixa a sidebar na tela */
     top: 0;
-    /* começa no topo */
     left: 0;
-    /* fixada na esquerda */
     height: 100vh;
-    /* altura total da viewport */
     width: 240px;
     background: linear-gradient(180deg, #1947e5, #3d65f4);
     display: flex;
@@ -33,7 +44,6 @@ body {
     color: white;
     padding: 20px 0;
     z-index: 1000;
-    /* garante que fique acima do conteúdo */
 }
 
 .main-content {
@@ -46,7 +56,6 @@ body {
     border-bottom-right-radius: 35px;
     padding: 10px 42px;
     margin: 10px 20px 30px 0px;
-
 }
 
 .logo {
@@ -85,7 +94,9 @@ body {
     gap: 10px;
 }
 
-/* Sidebar igual ao dashboard */
+/* ============================
+   ===== DUPLICATA SIDEBAR =====
+   ============================ */
 .sidebar {
     position: fixed;
     top: 0;
@@ -103,16 +114,14 @@ body {
 
 .main-content {
     margin-left: 240px;
-    padding: 2rem 3rem;
+    padding: 2.5rem 3rem;
     width: calc(100% - 240px);
     background: #fff;
-    /* box-shadow: inset 0 0 10px rgb(0 0 0 / 0.05); */
     display: flex;
     flex-direction: column;
-    min-height: 170vh;
+    min-height: 50rem;
 }
 
-/* Botão Voltar igual dashboard, porém alinhado à esquerda */
 button#voltar {
     align-self: flex-start;
     background-color: #1947e5;
@@ -135,12 +144,12 @@ button#voltar:hover {
 h1 {
     font-weight: 700;
     font-size: 1.8rem;
-    /* margin-bottom: 2rem;
-    color: #1947e5; */
     text-align: left;
 }
 
-/* Campos com fundo branco, sombra leve e espaçamento */
+/* ============================
+   ====== CLASSES .campo ======
+   ============================ */
 .campo {
     background: #fefefe;
     padding: 1rem 1.5rem;
@@ -149,22 +158,25 @@ h1 {
     margin-bottom: 1.5rem;
 }
 
-/* Label forte */
 .campo strong {
     display: block;
+    font-family: 'Poppins-Bold', sans-serif;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    color: #0d235e;
+    color: #000000;
 }
 
-/* Texto */
 .campo p,
 .campo span {
     font-weight: 500;
-    color: #444;
+    color: #000000;
     line-height: 1.4;
+    margin: 0;
 }
 
+/* ============================
+   ===== TÍTULO DETALHE =======
+   ============================ */
 .titulo-detalhe {
     display: flex;
     align-items: center;
@@ -180,7 +192,9 @@ h1 {
     display: inline-block;
 }
 
-/* Responsividade */
+/* ============================
+   ===== RESPONSIVIDADE ========
+   ============================ */
 @media (max-width: 768px) {
     .main-content {
         margin-left: 0;
@@ -200,4 +214,93 @@ h1 {
     button#voltar {
         margin-bottom: 1rem;
     }
+}
+
+/* ============================
+   ===== DIVIDER-HR AZUL ======
+   ============================ */
+.divider-hr {
+    display: block;
+    width: 100%;
+    border: none;
+    height: 1.5px;
+    border-radius: 15px;
+    background-color: #043e6d;
+    margin-top: 16px;
+    margin-bottom: 25px;
+}
+
+/* ============================
+   === GRID DE 4 COLUNAS (TOP) ==
+   ============================ */
+.info-header {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item .label {
+    font-size: 16px;
+    font-family: 'Poppins-Bold', sans-serif;
+    color: #000000;
+    margin-bottom: 4px;
+}
+
+.label {
+    font-family: 'Poppins-Bold', sans-serif;
+}
+
+.info-item .value {
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000;
+}
+
+/* ============================
+   ===== SEÇÕES VERTICAIS ======
+   ============================ */
+.section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25px;
+}
+
+.section-title {
+    display: block;
+    font-size: 16px;
+    font-family: 'Poppins-Bold', sans-serif;
+    color: #000000;
+    margin-bottom: 8px;
+}
+
+.section-text {
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000;
+    margin: 0;
+}
+
+.section-value {
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000;
+}
+
+.section-link {
+    font-size: 16px;
+    font-weight: 500;
+    color: #3EA8FF;
+    text-decoration: none;
+
+}
+
+.section-link:hover {
+    text-decoration: underline;
 }
