@@ -205,7 +205,7 @@ function gerarGraficos(data) {
     const tipos = {};
     const exploits = { Sim: 0, Nao: 0 };
 
-    data.forEach(v => {
+    dadosFiltrados.forEach(v => {
         const cvss = parseFloat(v['cvss_score']) || 0;
         if (cvss >= 9) severidades['Crítica']++;
         else if (cvss >= 7) severidades['Alta']++;
@@ -262,7 +262,7 @@ function gerarGraficos(data) {
 
     // --- Cria Exploit Chart (vulnerabilidades por IP) ---
     const vulnerabilidadesPorIP = {};
-    data.forEach(v => {
+    dadosFiltrados.forEach(v => {
         const ip = v['ip'] || 'Desconhecido';
         vulnerabilidadesPorIP[ip] = (vulnerabilidadesPorIP[ip] || 0) + 1;
     });
@@ -293,7 +293,7 @@ function gerarGraficos(data) {
 
     // --- Cria Service/Port Chart ---
     const servicos = {};
-    data.forEach(v => {
+    dadosFiltrados.forEach(v => {
         const key = `${v['servico_porta']} (${v['protocolo']})`;
         servicos[key] = (servicos[key] || 0) + 1;
     });
@@ -447,9 +447,6 @@ function gerarGraficos(data) {
     });
 }
 
-// ====== Registra o listener do filtro de “cor” (severidade) ======
-// Isso pode ficar no final do arquivo JS, depois de todas as funções.
-// Só certifica de que o elemento #colorSelect já exista no HTML.
 document.addEventListener('DOMContentLoaded', () => {
     const colorSelect = document.getElementById('colorSelect');
     if (colorSelect) {

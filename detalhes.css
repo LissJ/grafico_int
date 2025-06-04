@@ -40,14 +40,19 @@ body {
     background: linear-gradient(180deg, #1947e5, #3d65f4);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
+    /* não precisamos mais de space-between aqui */
     color: white;
     padding: 20px 0;
     z-index: 1000;
 }
 
-.main-content {
-    margin-left: 17rem;
+/* Transformando o <div> interno em flex container */
+.sidebar>div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* para ocupar toda a altura */
 }
 
 .logo-box {
@@ -56,13 +61,6 @@ body {
     border-bottom-right-radius: 35px;
     padding: 10px 42px;
     margin: 10px 20px 30px 0px;
-}
-
-.logo {
-    background-color: #ffffff;
-    font-size: 20px;
-    font-weight: bold;
-    color: black;
 }
 
 .menu a {
@@ -79,19 +77,22 @@ body {
     font-family: 'Poppins-Bold', sans-serif;
 }
 
+/* Aqui está o truque: empurrar o logout para baixo */
+.logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5vh 2vw;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+
+    margin-top: auto;
+}
+
 .divider {
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     margin: 0 20px;
-}
-
-.logout {
-    margin-top: auto;
-    margin-left: 20px;
-    color: white;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 /* ============================
