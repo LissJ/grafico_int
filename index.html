@@ -82,22 +82,23 @@
             <canvas id="serviceChart" width="480" height="250"></canvas>
         </div>
 
-        <!-- Tabela timeline -->
+        <!-- Tabela timeline (inicialmente oculta) -->
         <table id="timelineTable" border="1"
-            style="width: 100%; margin-top: 30px; border-collapse: collapse; font-family: 'Poppins', sans-serif;">
+            style="width: 100%; margin-top: 30px; font-family: 'Poppins', sans-serif; display: none;">
             <thead>
                 <tr>
-                    <th style="padding: 6px; background: #f0f0f0; text-align: left;">Data da Descoberta</th>
-                    <th style="padding: 6px; background: #f0f0f0; text-align: left;">Título</th>
-                    <th style="padding: 6px; background: #f0f0f0; text-align: left;">ID da CVE</th>
+                    <th>Data da Descoberta</th>
+                    <th>Título</th>
+                    <th>ID da CVE</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Será populado dinamicamente pelo JS com flat list -->
+                <!-- Será populado dinamicamente pelo JS -->
             </tbody>
         </table>
-        <!-- Botão Ver Mais/Tudo/Menos -->
-        <div id="verMaisContainer" class="verMaisContainer">
+
+        <!-- Botão Ver Mais/Tudo/Menos (inicialmente oculto) -->
+        <div id="verMaisContainer" class="verMaisContainer" style="display: none;">
             <button id="verMaisBtn" class="verMaisBtn">Ver mais</button>
         </div>
 

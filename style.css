@@ -145,6 +145,7 @@ canvas {
 }
 
 .verMaisContainer {
+    display: none;
     text-align: end;
     margin-top: 1rem;
 
@@ -155,3 +156,60 @@ canvas {
     cursor: pointer;
     margin-bottom: 8rem;
 }
+
+#timelineTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 0.5px solid #5b8ce2;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #9abaf1;
+  }
+  
+  #timelineTable thead tr {
+    background-color: #4A90E2;
+  }
+  
+  #timelineTable thead th {
+    padding: 10px 12px;
+    color: #000000;
+    font-family: 'Poppins-Bold';
+    text-align: left;
+    background-color: #ffffff;
+    border-bottom: 0.5px solid #5b8ce2;
+  }
+  
+  #timelineTable tbody td {
+    padding: 8px 12px;
+    background-color: #f7f9fc;
+    color: #000000;
+    border-bottom: 0.5px solid #5b8ce2;
+  }
+  
+  #timelineTable tbody tr:nth-child(even) td {
+    background-color: #eff3fa;
+  }
+  
+  #timelineTable tbody tr:hover td {
+    background-color: #e0ebff;
+    cursor: pointer;
+  }
+  
+  #timelineTable tbody tr:last-child td {
+    border-bottom: 0.5px solid #0f2c5f;
+  }
+  
+  #timelineTable tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+  }
+  
+  #timelineTable tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+
+  #timelineTable tbody td {
+    padding: 16px 12px; /* 16px em cima/baixo e 12px nas laterais */
+  }
+
+  

@@ -68,9 +68,10 @@ function parseCSV(text) {
 window.addEventListener('pageshow', () => {
     const estadoSalvo = sessionStorage.getItem('dashboardState');
     if (estadoSalvo) {
-        const { dadosGlobais: savedDados, filtroIP: savedFiltro } = JSON.parse(estadoSalvo);
+        const { dadosGlobais: savedDados, filtroIP: savedFiltro, filtroCor: savedFiltroCor } = JSON.parse(estadoSalvo);
         dadosGlobais = savedDados;
         filtroIP = savedFiltro;
+        filtroCor = savedFiltroCor; // <<< NOVO: recupera filtro de cor também
 
         // Ajusta os filtros na interface
         document.getElementById('filtroContainer').style.display = 'block';
@@ -84,6 +85,10 @@ window.addEventListener('pageshow', () => {
                 ? dadosGlobais.filter(v => v['ip'] === filtroIP)
                 : dadosGlobais
         );
+
+        // Exibe a tabela e o botão “Ver mais”, pois já havia dados carregados
+        document.getElementById('timelineTable').style.display = 'table';
+        document.getElementById('verMaisContainer').style.display = 'block';
 
         sessionStorage.removeItem('dashboardState');
     }
@@ -121,6 +126,9 @@ document.getElementById('csvFile').addEventListener('change', function (e) {
         document.getElementById('filtroContainer').style.display = 'block';
 
         gerarGraficos(dadosGlobais);
+
+        document.getElementById('timelineTable').style.display = 'table';
+        document.getElementById('verMaisContainer').style.display = 'block';
     };
     reader.readAsText(file);
 });
@@ -328,7 +336,6 @@ function gerarGraficos(data) {
     const MAX_LINHAS = 5;
     let indiceAtual = MAX_LINHAS;
 
-    const container = document.getElementById('timelineTable').parentElement;
     const todasAsLinhas = [];
 
     ordenados.forEach((v, index) => {
@@ -378,7 +385,8 @@ function gerarGraficos(data) {
             sessionStorage.setItem('vulnDetalhe', JSON.stringify(v));
             sessionStorage.setItem('dashboardState', JSON.stringify({
                 dadosGlobais,
-                filtroIP
+                filtroIP,
+                filtroCor // <<< NOVO: salva também o filtro de cor
             }));
             window.location.href = 'detalhes.html';
         });
