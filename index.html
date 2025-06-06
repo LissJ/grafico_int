@@ -26,12 +26,12 @@
                 </a>
                 <div class="divider"></div>
                 <a href="#" class="active">
-                    <img src="assets/locate.png" alt="Mapear"
+                    <img src="assets/analytics.png" alt="Mapear"
                         style="height: 20px; vertical-align: middle; margin-right: 8px;" />
                     Mapear
                 </a>
                 <div class="divider"></div>
-                <a href="#">
+                <!-- <a href="#">
                     <img src="assets/analytics.png" alt="Análise"
                         style="height: 20px; vertical-align: middle; margin-right: 8px;" />
                     Análise
@@ -41,7 +41,7 @@
                     <img src="assets/lamp.png" alt="Sugestão"
                         style="height: 20px; vertical-align: middle; margin-right: 8px;" />
                     Sugestão
-                </a>
+                </a> -->
             </div>
             <a href="#" class="logout">
                 <img src="assets/logout.png" alt="Logout"
@@ -52,14 +52,22 @@
     </div>
 
     <main class="main-content">
-        <h1>Dashboard de Vulnerabilidades</h1>
+        <h1 class="dashboard">
+            Dashboard de Vulnerabilidades
+        </h1>
+        <h2 class="subtitle">
+            Importe o .csv para ter acesso aos gráficos do scan, com uma análise mais apurada! Selecione o arquivo:
+        </h2>
 
         <!-- Upload CSV -->
+        <label for="csvFile" class="customFileBtn">Escolher arquivo</label>
         <input type="file" id="csvFile" accept=".csv" class="ficheiro" />
+
+        <hr class="divider-hr" />
 
         <!-- Filtro IP -->
         <div id="filtroContainer" style="display:none; margin-top: 15px;">
-            <label for="ipSelect"><strong>Filtrar por Host/IP:</strong></label><br />
+            <label for="ipSelect">Filtrar por Host/IP:</label>
             <select id="ipSelect">
                 <option value="">Todos</option>
             </select>

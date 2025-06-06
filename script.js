@@ -209,10 +209,8 @@ function gerarGraficos(data) {
     }
 
     // --- Calcula métricas (gráficos) com base em data (não muda por cor) ---
+    // --- Severidades ---
     const severidades = { 'Crítica': 0, 'Alta': 0, 'Média': 0, 'Baixa': 0, 'Informativa': 0 };
-    const tipos = {};
-    const exploits = { Sim: 0, Nao: 0 };
-
     dadosFiltrados.forEach(v => {
         const cvss = parseFloat(v['cvss_score']) || 0;
         if (cvss >= 9) severidades['Crítica']++;
@@ -220,24 +218,34 @@ function gerarGraficos(data) {
         else if (cvss >= 4) severidades['Média']++;
         else if (cvss > 0) severidades['Baixa']++;
         else severidades['Informativa']++;
+    });
 
-        const tp = v['tipo_vulnerabilidade'] || 'Outro';
+    // --- Tipos de vulnerabilidade (sem "undefined") ---
+    const tipos = {};
+    dadosFiltrados.forEach(v => {
+        const tpBruto = v['tipo_vulnerabilidade'];
+        const tp = tpBruto && tpBruto.trim() !== '' ? tpBruto : 'Outro';
         tipos[tp] = (tipos[tp] || 0) + 1;
+    });
 
+    // --- Exploit disponível (Sim / Não) ---
+    const exploits = { Sim: 0, Nao: 0 };
+    dadosFiltrados.forEach(v => {
         const ex = v['exploit_disponivel'];
-        if (ex === 'Sim' || ex === 'Não') exploits[ex]++;
+        if (ex === 'Sim') exploits['Sim']++;
+        else if (ex === 'Não') exploits['Nao']++;
+        // caso esteja vazio ou “undefined”, ignora
     });
 
     // --- Destroi gráficos antigos ---
     [cvssChart, vulnTypeChart, exploitChart, serviceChart].forEach(ch => ch && ch.destroy());
 
-    // --- Cria CVSS Chart ---
+    // --- Cria CVSS Chart com legenda desabilitada (sem “undefined”) ---
     cvssChart = new Chart(document.getElementById('cvssChart'), {
         type: 'bar',
         data: {
             labels: Object.keys(severidades),
             datasets: [{
-                label: 'Número de Vulnerabilidades por Severidade',
                 data: Object.values(severidades),
                 backgroundColor: ['#002171', '#1565C0', '#1976D2', '#42A5F5', '#90CAF9']
             }]
@@ -248,16 +256,23 @@ function gerarGraficos(data) {
             animation: { duration: 400 },
             responsive: false,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false  // legenda removida para não exibir “undefined”
+                }
+            }
         }
     });
 
-    // --- Cria Vulnerability Type Chart ---
+    // --- Cria Vulnerability Type Chart (sem undefined, pois labels vêm de "tipos") ---
+    const labelsTipos = Object.keys(tipos);
+    const dataTipos = Object.values(tipos);
     vulnTypeChart = new Chart(document.getElementById('vulnTypeChart'), {
         type: 'pie',
         data: {
-            labels: Object.keys(tipos),
+            labels: labelsTipos,
             datasets: [{
-                data: Object.values(tipos),
+                data: dataTipos,
                 backgroundColor: ['#002171', '#42A5F5', '#90CAF9', '#1565C0', '#0D47A1']
             }]
         },
@@ -265,23 +280,25 @@ function gerarGraficos(data) {
             animation: { duration: 400 },
             responsive: false,
             maintainAspectRatio: false,
+            // aqui a legenda será exibida com "labelsTipos" (não aparece undefined)
         }
     });
 
-    // --- Cria Exploit Chart (vulnerabilidades por IP) ---
+    // --- Cria Exploit Chart (vulnerabilidades por IP) sem legenda ---
     const vulnerabilidadesPorIP = {};
     dadosFiltrados.forEach(v => {
-        const ip = v['ip'] || 'Desconhecido';
+        const ip = v['ip'] && v['ip'].trim() !== '' ? v['ip'] : 'Desconhecido';
         vulnerabilidadesPorIP[ip] = (vulnerabilidadesPorIP[ip] || 0) + 1;
     });
+    const labelsIPs = Object.keys(vulnerabilidadesPorIP);
+    const dataIPs = Object.values(vulnerabilidadesPorIP);
 
     exploitChart = new Chart(document.getElementById('exploitChart'), {
         type: 'bar',
         data: {
-            labels: Object.keys(vulnerabilidadesPorIP),
+            labels: labelsIPs,
             datasets: [{
-                label: 'Número de Vulnerabilidades por IP',
-                data: Object.values(vulnerabilidadesPorIP),
+                data: dataIPs,
                 backgroundColor: '#0D47A1'
             }]
         },
@@ -296,21 +313,33 @@ function gerarGraficos(data) {
             animation: { duration: 400 },
             responsive: false,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false  // remove legenda para não exibir “undefined”
+                }
+            }
         }
     });
 
-    // --- Cria Service/Port Chart ---
+    // --- Cria Service/Port Chart (sem undefined) sem legenda ---
     const servicos = {};
     dadosFiltrados.forEach(v => {
-        const key = `${v['servico_porta']} (${v['protocolo']})`;
+        const portaBruto = v['servico_porta'];
+        const protocoloBruto = v['protocolo'];
+        const porta = portaBruto && portaBruto.trim() !== '' ? portaBruto : 'Desconhecido';
+        const protocolo = protocoloBruto && protocoloBruto.trim() !== '' ? protocoloBruto : '';
+        const key = protocolo ? `${porta} (${protocolo})` : porta;
         servicos[key] = (servicos[key] || 0) + 1;
     });
+    const labelsServicos = Object.keys(servicos);
+    const dataServicos = Object.values(servicos);
+
     serviceChart = new Chart(document.getElementById('serviceChart'), {
         type: 'bar',
         data: {
-            labels: Object.keys(servicos),
+            labels: labelsServicos,
             datasets: [{
-                data: Object.values(servicos),
+                data: dataServicos,
                 backgroundColor: '#42A5F5'
             }]
         },
@@ -319,6 +348,11 @@ function gerarGraficos(data) {
             scales: { x: { beginAtZero: true, precision: 0 } },
             responsive: false,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false  // remove legenda para não exibir “undefined”
+                }
+            }
         }
     });
 
